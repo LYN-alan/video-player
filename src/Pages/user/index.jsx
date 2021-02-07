@@ -1,11 +1,14 @@
 import React from 'react'
-
-export default class User extends React.Component{
+class User extends React.Component{
+    constructor(props){
+        super(props)
+    }
     render(){
-        return (
+        return(
             <div>
                 this is user page
             </div>
         )
     }
 }
+module.exports = User

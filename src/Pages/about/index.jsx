@@ -1,6 +1,8 @@
 import React from 'react'
-
-export default class About extends React.Component{
+class About extends React.Component{
+    constructor(props){
+        super(props)
+    }
     render(){
         return(
             <div>
@@ -9,3 +11,4 @@ export default class About extends React.Component{
         )
     }
 }
+module.exports = About

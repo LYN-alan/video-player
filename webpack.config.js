@@ -6,6 +6,7 @@ const config = {
         filename: 'bundle.js',
         path: path.join(__dirname, 'dist')
     },
+    devtool: 'cheap-module-source-map',
     module: {
         rules: [
             {
@@ -16,10 +17,24 @@ const config = {
                 ]
             },
             {
+                test: /\.less$/,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    'less-loader' 
+                ]
+            },
+            {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
                 use: [
                     'babel-loader'
+                ]
+            },
+            {
+                test: /\.mp4?$/,
+                use: [
+                    'file-loader'
                 ]
             }
         ]
@@ -27,7 +42,15 @@ const config = {
     devServer: {
         contentBase: path.join(__dirname, 'dist'),
         compress: true,
-        port: 8080
+        port: 8080,
+        proxy: {
+            '/api': {
+                target: 'https://vd4.bdstatic.com',
+                pathRewrite: {'^/api' : ''},
+                changeOrigin: true,     // target是域名的话，需要这个参数，
+                secure: false,          // 设置支持https协议的代理
+            },
+        }
     },
     plugins: [
         new htmlWebpackPlugin({
@@ -35,6 +58,6 @@ const config = {
             filename: 'index.html',
             inject: true
         })
-    ]
+    ],
 }
 module.exports = config
