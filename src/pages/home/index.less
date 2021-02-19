@@ -11,15 +11,15 @@
         max-width: 1024px;
         background-color: #000000;
         position: relative;
-        margin: 0 auto;
+        margin: 14px auto;
         display: flex;
         overflow: hidden;
-        // &:hover{
-        //     .video_tool{
-        //         transform: translateY(0);
-        //         transition: transform .5s;
-        //     }
-        // }
+        &:hover{
+            .video_tool{
+                transform: translateY(0);
+                transition: transform .5s;
+            }
+        }
         video{
             width: 100%;
             flex: 1;
@@ -34,7 +34,7 @@
             height: 55px;
             // padding: 0px 6px;
             z-index: 2147483648;
-            // transform: translateY(1000px);
+            transform: translateY(1000px);
             .video_player_process{
                 position: relative;
                 z-index: 1;
@@ -46,11 +46,21 @@
                     margin: 0;
                     font-size: 0;
                     padding: 0;
+                    z-index: 2;
+                    &:hover{
+                        .ant-slider-handle{
+                            visibility: visible;
+                            animation: .3s visibility;
+                        }
+                    }
                     .ant-slider-rail{
                         background-color: transparent;
                     }
                     .ant-slider-handle{
-                        display: none;
+                        width: 10px;
+                        height: 10px;
+                        margin-top: -2.5px;
+                        visibility: hidden;
                     }
 
                 }
@@ -87,6 +97,50 @@
                     align-items: center;
                     .icon_fullscreen{
                         margin: 0 12px;
+                    }
+                    .text_show_play_rate{
+                        margin: 0 10px;
+                    }
+                    .icon_volume{
+                        margin: 0 10px;
+                        cursor: pointer;
+                        position: relative;
+                        display: flex;
+                        align-items: center;
+                        padding: 6px 0;
+                        &:hover{
+                            .slide_control_volume{
+                                display: block;
+                            }
+                        }
+                        .icon_volume{
+                            display: inline-block;
+                            background-image: url('http://image.lynalan.top/volume.svg');
+                            width: 20px;
+                            height: 20px;
+                            margin: 0;
+                            background-size: contain;
+                        }
+                        .slide_control_volume{
+                            display: none;
+                            position: absolute;
+                            top: -98px;
+                            height: 100px;
+                            left: -3px;
+                            background: #fff;
+                            padding: 6px;
+                            z-index: 2;
+                            border-radius: 2px;
+                            .ant-slider-vertical{
+                                margin: 0;
+                                .ant-slider-handle{
+                                    width: 10px;
+                                    height: 10px;
+                                    margin-left: -3px;
+                                }
+                            }
+
+                        }
                     }
                 }
             }

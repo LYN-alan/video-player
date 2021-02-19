@@ -26,9 +26,11 @@ class Home extends React.Component{
         })
         this.formatVideoTime()
         window.addEventListener('fullscreenchange',this.screenSizeChange, false)
+        console.log(this.refs.myVideo.volume)
+        
     }
     componentWillUnmount(){
-        window.removeEventListener('fullscreenchange')
+        window.removeEventListener('fullscreenchange', this.screenSizeChange)
     }
     screenSizeChange = () => {
         this.setState({
@@ -84,10 +86,10 @@ class Home extends React.Component{
         })
     }
     dropSlider = (data) => {
+        console.log(data)
         let {videoRefs} = this.state
         videoRefs.currentTime = videoRefs.duration * (data / 100)
         // videoRefs.play()
-        console.log(data)
         this.setState({
             currentSliderTime: data,
             currentTimeCatch: videoRefs.duration * (data / 100),
@@ -137,6 +139,39 @@ class Home extends React.Component{
             isFullScreen: false
         })
     }
+    // 键盘快进快退
+    videoWrapKeyEvent = (e) => {
+        console.log(e)
+        const { videoRefs } = this.state
+        if(e.keyCode === 39){
+            if(!videoRefs.paused){
+                videoRefs.currentTime += 5
+            }
+        }
+        if(e.keyCode === 37){
+            if(!videoRefs.paused){
+                videoRefs.currentTime -= 5
+            }
+        }
+        if(e.keyCode === 32){
+            if(videoRefs.paused){
+                videoRefs.play()
+                this.setState({
+                    videoPlayStatus: true
+                })
+            }else{
+                videoRefs.pause()
+                this.setState({
+                    videoPlayStatus: false
+                })
+            }
+        }
+
+    }
+    videoVolumeChange = (key) => {
+        console.log(key)
+        this.refs.myVideo.volume = key
+    }
     render(){
         const {
             currentCatch, currentSliderTime, videoTotalTime,videoCurrentTime,
@@ -144,8 +179,8 @@ class Home extends React.Component{
         } = this.state
         return(
             <div className="container">
-                <div className='video_title'>这是一个自定义的视频播放器</div>
-                <div className='video_wrap' ref="videoWrap">
+                {/* <div className='video_title'>这是一个自定义的视频播放器</div> */}
+                <div className='video_wrap' ref="videoWrap" tabIndex="-1" onKeyDown={this.videoWrapKeyEvent}>
                     <video 
                         onLoadStart={this.videoStartLoad}
                         onCanPlayThrough={this.videoCanPlay}
@@ -153,11 +188,17 @@ class Home extends React.Component{
                         onTimeUpdate={this.videoTimeUpdate}
                         ref='myVideo' 
                         preload='auto'
-                        src={require("../../../public/mda-jfjh8uxxzswmhbhe.mp4").default}></video>
+                        src="http://cdn.lynalan.top/mda-jfjh8uxxzswmhbhe.mp4"></video>
                     <div className="video_tool">
                         <div className="video_player_process">
                             <Progress showInfo={false} strokeWidth={4} className="video_player_catch_procress" percent={currentCatch} strokeColor='rgba(255,255,255,.6)' trailColor='rgba(255,255,255,.5)'/>
-                            <Slider step={0.05} onChange={this.dropSlider} tooltipVisible={false} className="video_player_slider" value={currentSliderTime} ></Slider>
+                            <Slider 
+                                step={0.05} 
+                                onChange={this.dropSlider} 
+                                tooltipVisible={false} 
+                                className="video_player_slider" 
+                                value={currentSliderTime} 
+                            ></Slider>
                         </div>
                         <div className="video_player_control">
                             <div className="video_player_control_left">
@@ -165,14 +206,24 @@ class Home extends React.Component{
                                 <div>{this.formatVideoTime(videoTotalTime)} / {this.formatVideoTime(videoCurrentTime)}</div>
                             </div>
                             <div className="video_player_control_right">
+                                <div className="icon_volume">
+                                    <span className="icon_volume"></span>
+                                    <div className="slide_control_volume">
+                                        <Slider 
+                                        step={0.05} 
+                                        onChange={this.videoVolumeChange}
+                                        tooltipVisible={false} 
+                                        vertical 
+                                        min={0}  
+                                        max={1} 
+                                        defaultValue={0.5} />
+                                    </div>
+                                </div>
                                 <Dropdown 
-                                trigger={['click']}
-                                arrow
-                                overlayStyle={{backgroundColor: 'rgba(0,0,0,.5)'}}
-                                getPopupContainer={() => document.querySelector('.video_player_control_right')}
-                                overlay={this.videoPlaySpeed} 
-                                placement='topCenter'>
-                                    <span>{playbackRate}</span>
+                                    getPopupContainer={() => document.querySelector('.video_player_control_right')}
+                                    overlay={this.videoPlaySpeed} 
+                                    placement='topCenter'>
+                                    <span className="text_show_play_rate">{playbackRate}</span>
                                 </Dropdown>
                                 {
                                     !isFullScreen?
